@@ -1,45 +1,55 @@
 #include<bits/stdc++.h>
 using namespace std;
+
 int main()
 {
-    int n;//number of nodes
-    while(cin>>n){
-            if(n==0)break;
+    int node;
+    while(cin>>node){
+        if(node==0)break;
+
+        vector<int>adj[node+5];
         int edge;
         cin>>edge;
-        vector<int>adj[n+1];
-        int x,y;
-        for(int i=1;i<=edge; i++){
+        int x,y,src;
+        for(int i=1; i<=edge; i++)
+        {
             cin>>x>>y;
             adj[x].push_back(y);
             adj[y].push_back(x);
+            src = x;
         }
 
-        int color[n+5];
-        for(int i=0; i<=n; i++)color[i]=1;
-        bool ans = true;
         queue<int>q;
-        q.push(x);
-        while(!q.empty())
+        q.push(src);
+        int check[node+5];
+        memset(check,0,sizeof(check));
+        int color[node+5];
+        memset(color,0,sizeof(color));
+        bool flag=true;
+
+        color[src] = 1;
+        while(!q.empty() && flag)
         {
-            int source = q.front();
+            int u = q.front();
             q.pop();
-            for(int i=0; i<adj[source].size(); i++)
+            check[u] = 1;
+            for(int i=0; i<adj[u].size(); i++)
             {
-                if(color[adj[source][i]]==1)
+                int v = adj[u][i];
+                if(!check[v])
                 {
-                    color[adj[source][i]] = 1-color[source];
-                    q.push(adj[source][i]);
-                }
-                else if(color[adj[source][i]] == color[source])
-                {
-                    ans = false;
-                    break;
+                    if(color[v] != color[u]){
+                        q.push(v);
+                        color[v] = color[u]==1 ? 2 : 1;
+                    }
+                    else{
+                        flag = false;
+                        break;
+                    }
                 }
             }
-            if(!ans) break;
         }
-        if(ans){
+        if(flag){
             cout<<"BICOLORABLE."<<endl;
         }
         else{
@@ -47,4 +57,3 @@ int main()
         }
     }
 }
-
